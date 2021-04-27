@@ -54,6 +54,8 @@ import { getShouldShowAppBanner, handleScroll } from './utils';
 import isNavUnificationEnabled from 'calypso/state/selectors/is-nav-unification-enabled';
 import { useBreakpoint } from '@automattic/viewport-react';
 import { isWithinBreakpoint } from '@automattic/viewport';
+import { isAutomatticTeamMember } from 'calypso/reader/lib/teams';
+import { getReaderTeams } from 'calypso/state/teams/selectors';
 
 /**
  * Style dependencies
@@ -129,6 +131,7 @@ class Layout extends Component {
 		sectionName: PropTypes.string,
 		colorSchemePreference: PropTypes.string,
 		shouldShowAppBanner: PropTypes.bool,
+		useFontSmoothAntialiased: PropTypes.bool,
 	};
 
 	componentDidMount() {
@@ -257,6 +260,10 @@ class Layout extends Component {
 
 			if ( this.props.sidebarIsCollapsed && isWithinBreakpoint( '>800px' ) ) {
 				bodyClass.push( 'is-sidebar-collapsed' );
+			}
+
+			if ( this.props.useFontSmoothAntialiased ) {
+				bodyClass.push( 'font-smoothing-antialiased' );
 			}
 
 			return {
@@ -437,6 +444,7 @@ export default compose(
 			isCheckoutFromGutenboarding,
 			isNavUnificationEnabled: isNavUnificationEnabled( state ),
 			sidebarIsCollapsed: getSidebarIsCollapsed( state ),
+			useFontSmoothAntialiased: isAutomatticTeamMember( getReaderTeams( state ) ),
 		};
 	} )
 )( Layout );
