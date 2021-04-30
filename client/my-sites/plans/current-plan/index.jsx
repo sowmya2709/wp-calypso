@@ -65,6 +65,7 @@ import JetpackSecurityRealtimeThankYou from './current-plan-thank-you/jetpack-se
 import { getSitePurchases } from 'calypso/state/purchases/selectors';
 import QueryConciergeInitial from 'calypso/components/data/query-concierge-initial';
 import getConciergeScheduleId from 'calypso/state/selectors/get-concierge-schedule-id';
+import { isUserLoggedIn as getIsUserLoggedIn } from 'calypso/state/current-user/selectors';
 
 /**
  * Style dependencies
@@ -80,6 +81,7 @@ class CurrentPlan extends Component {
 		selectedSiteId: PropTypes.number,
 		selectedSite: PropTypes.object,
 		isRequestingSitePlans: PropTypes.bool,
+		isUserLoggedIn: PropTypes.bool,
 		path: PropTypes.string.isRequired,
 		domains: PropTypes.array,
 		purchases: PropTypes.array,
@@ -91,7 +93,6 @@ class CurrentPlan extends Component {
 		hasDomainsLoaded: PropTypes.bool,
 		showJetpackChecklist: PropTypes.bool,
 		showThankYou: PropTypes.bool,
-
 		// From localize() HoC
 		translate: PropTypes.func.isRequired,
 	};
@@ -115,7 +116,15 @@ class CurrentPlan extends Component {
 	};
 
 	renderThankYou() {
-		const { currentPlan, product, selectedSite } = this.props;
+		const { currentPlan, isUserLoggedIn, product, selectedSite } = this.props;
+
+		if ( ! isUserLoggedIn ) {
+			return (
+				<div>
+					<p>{ 'Thanks for the logged-out purchase.' }</p>
+				</div>
+			);
+		}
 
 		if ( JETPACK_BACKUP_PRODUCTS.includes( product ) ) {
 			return <BackupProductThankYou />;
@@ -298,6 +307,7 @@ export default connect( ( state, { requestThankYou } ) => {
 		purchases,
 		hasDomainsLoaded: !! domains,
 		isRequestingSitePlans: isRequestingSitePlans( state, selectedSiteId ),
+		isUserLoggedIn: getIsUserLoggedIn( state ),
 		selectedSite,
 		selectedSiteId,
 		shouldShowDomainWarnings: ! isJetpack || isAutomatedTransfer,
