@@ -2,9 +2,9 @@
  * External dependencies
  */
 import dependencyTree from 'dependency-tree';
-import readPkgUp from 'read-pkg-up';
+import { readPackageUpSync } from 'read-pkg-up';
 import type { NormalizedReadResult } from 'read-pkg-up';
-import type { DependencyObj } from 'dependency-tree';
+import type { Tree } from 'dependency-tree';
 import path from 'path';
 import fs from 'fs';
 
@@ -26,12 +26,12 @@ export const findDependencies = async ( {
 	modules: string[];
 } > => {
 	const missing: string[] = [];
-	const visited: DependencyObj = {};
+	const visited: Tree = {};
 	const packages: Set< string > = new Set();
 	const modules: Set< string > = new Set();
 
 	const pkgJsonPath = path.resolve( pkg, 'package.json' );
-	const entrypoints = findPackageJsonEntrypoints( { pkgPath: pkg } );
+	const entrypoints = await findPackageJsonEntrypoints( { pkgPath: pkg } );
 	modules.add( pkgJsonPath );
 
 	const jestTests = await ( async () => {
@@ -71,7 +71,7 @@ export const findDependencies = async ( {
 				const isNodeModules = path.includes( 'node_modules' );
 
 				if ( isMonorepo || isNodeModules ) {
-					const { version, name } = ( readPkgUp.sync( {
+					const { version, name } = ( readPackageUpSync( {
 						cwd: path,
 					} ) as NormalizedReadResult ).packageJson;
 					packages.add( `${ name }@${ version }` );

@@ -1,12 +1,16 @@
 /**
  * External dependencies
  */
-import readPkg from 'read-pkg';
+import { readPackageAsync } from 'read-pkg';
 import path from 'path';
 import fs from 'fs';
 
-export const findPackageJsonEntrypoints = ( { pkgPath }: { pkgPath: string } ): string[] => {
-	const pkgJson = readPkg.sync( { cwd: pkgPath } );
+export const findPackageJsonEntrypoints = async ( {
+	pkgPath,
+}: {
+	pkgPath: string;
+} ): Promise< string[] > => {
+	const pkgJson = await readPackageAsync( { cwd: pkgPath } );
 
 	const main = pkgJson[ 'calypso:src' ] ?? pkgJson.main ?? 'index.js';
 	const bin = pkgJson.bin ?? {};
