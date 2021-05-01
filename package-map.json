@@ -82,6 +82,8 @@
 			"apps/editing-toolkit/editing-toolkit-plugin/whats-new/index.js",
 			"apps/editing-toolkit/editing-toolkit-plugin/wpcom-block-editor-nav-sidebar/index.ts",
 			"apps/editing-toolkit/editing-toolkit-plugin/wpcom-block-editor-nux/index.js",
+			"apps/editing-toolkit/editing-toolkit-plugin/error-reporting/index.js",
+			"apps/editing-toolkit/editing-toolkit-plugin/posts-list-block/index.js",
 			"apps/editing-toolkit/editing-toolkit-plugin/**/*.php"
 		]
 	}

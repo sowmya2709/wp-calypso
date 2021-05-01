@@ -26,6 +26,7 @@ type PackageMapEntry = {
 type PackageMap = Array< PackageMapEntry >;
 const packageMap: PackageMap = JSON.parse( fs.readFileSync( packageMapPath, 'utf8' ) );
 
+// TODO: Parse "packages/" directory to generate this list.
 const monorepoPackages = [
 	'packages/accessible-focus',
 	'packages/babel-plugin-i18n-calypso',
@@ -87,7 +88,10 @@ const monorepoPackages = [
 	'packages/wpcom.js',
 ].map( ( pkg ) => path.resolve( pkg ) );
 
-const parsePackage = async ( { path: pkgPath, additionalEntryPoints }: PackageMapEntry ) => {
+const findPackageDependencies = async ( {
+	path: pkgPath,
+	additionalEntryPoints,
+}: PackageMapEntry ) => {
 	const absolutePkgPath = path.resolve( pkgPath );
 
 	const { missing, packages, modules } = await findDependencies( {
@@ -99,7 +103,12 @@ const parsePackage = async ( { path: pkgPath, additionalEntryPoints }: PackageMa
 		`find ${ absolutePkgPath } -type f -not -path '*/node_modules/*'`
 	);
 	const allFiles = stdout.trim().split( '\n' );
-	const unknownFiles = allFiles.filter( ( file ) => ! modules.includes( file ) );
+
+	// Files which exist in the filesystem, but the dep finder did not parse.
+	// We exclude files which do not impact builds, such as ".txt" or ".md" files.
+	const unknownFiles = allFiles.filter(
+		( file ) => ! modules.includes( file ) && ! [ '.md', '.txt' ].includes( path.extname( file ) )
+	);
 
 	console.log( 'Package:' );
 	console.log( '  ' + pkgPath );
@@ -115,25 +124,18 @@ const parsePackage = async ( { path: pkgPath, additionalEntryPoints }: PackageMa
 	console.log();
 };
 
-const parseAllPackages = async () => {
-	for ( const packageEntry of packageMap ) {
-		await parsePackage( packageEntry );
-	}
-};
-
-const parseOnePackage = async ( packagePath: string ) => {
-	const packageEntry = packageMap.find( ( { path } ) => path === packagePath );
-	if ( packageEntry ) {
-		await parsePackage( packageEntry );
-	}
-};
-
 const main = async () => {
 	const packageToParse = process.argv.slice( 2 )[ 0 ];
+	// Allow parsing a single package.
 	if ( packageToParse ) {
-		parseOnePackage( packageToParse );
+		const packageEntry = packageMap.find( ( { path } ) => path === packageToParse );
+		if ( packageEntry ) {
+			findPackageDependencies( packageEntry );
+		}
 	} else {
-		parseAllPackages();
+		for ( const packageEntry of packageMap ) {
+			await findPackageDependencies( packageEntry );
+		}
 	}
 };
 
