@@ -11,6 +11,7 @@ import fs from 'fs';
 import { findPackageJsonEntrypoints } from './entrypoints/packagejson.js';
 import { findJestEntrypoints } from './entrypoints/jest.js';
 import { findAdditionalEntryPoints } from './entrypoints/additional.js';
+import { findMissingPackages } from './find-missing.js';
 
 export const findDependencies = async ( {
 	pkg,
@@ -25,7 +26,7 @@ export const findDependencies = async ( {
 	packages: string[];
 	modules: string[];
 } > => {
-	const missing: string[] = [];
+	let missing: string[] = [];
 	const visited: Tree = {};
 	const packages: Set< string > = new Set();
 	const modules: Set< string > = new Set();
@@ -58,32 +59,42 @@ export const findDependencies = async ( {
 
 	const absoluteAdditionalEntryPoints = await findAdditionalEntryPoints( additionalEntryPoints );
 
+	// Handles monorepo and npm results from parsed files.
+	const fileFilter = ( path: string ) => {
+		const isMonorepo = monorepoPackages.some(
+			( monorepoPackage ) => ! path.startsWith( pkg ) && path.startsWith( monorepoPackage )
+		);
+		const isNodeModules = path.includes( 'node_modules' );
+
+		if ( isMonorepo || isNodeModules ) {
+			const { version, name } = ( readPackageUpSync( {
+				cwd: path,
+			} ) as NormalizedReadResult ).packageJson;
+			packages.add( `${ name }@${ version }` );
+			return false;
+		}
+
+		return true;
+	};
+
 	for ( const entrypoint of [ ...entrypoints, ...jestTests, ...absoluteAdditionalEntryPoints ] ) {
 		const tree = dependencyTree.toList( {
 			filename: entrypoint,
 			directory: path.dirname( entrypoint ),
 			tsConfig: tsConfig ?? undefined,
 			visited,
-			filter: ( path ) => {
-				const isMonorepo = monorepoPackages.some(
-					( monorepoPackage ) => ! path.startsWith( pkg ) && path.startsWith( monorepoPackage )
-				);
-				const isNodeModules = path.includes( 'node_modules' );
-
-				if ( isMonorepo || isNodeModules ) {
-					const { version, name } = ( readPackageUpSync( {
-						cwd: path,
-					} ) as NormalizedReadResult ).packageJson;
-					packages.add( `${ name }@${ version }` );
-					return false;
-				}
-
-				return true;
-			},
+			filter: fileFilter,
 			nonExistent: missing,
 		} );
 		tree.forEach( ( module ) => modules.add( module ) );
 	}
+
+	// Handle missing files which do exist, but are weird enough for dependencyTree to miss.
+	const { foundPackages, resolvedFiles } = findMissingPackages( missing );
+	resolvedFiles.forEach( fileFilter );
+	missing = missing.filter(
+		( missingModule ) => ! foundPackages.some( ( foundModule ) => foundModule === missingModule )
+	);
 
 	return {
 		missing,
