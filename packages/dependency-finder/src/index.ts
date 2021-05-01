@@ -26,67 +26,13 @@ type PackageMapEntry = {
 type PackageMap = Array< PackageMapEntry >;
 const packageMap: PackageMap = JSON.parse( fs.readFileSync( packageMapPath, 'utf8' ) );
 
-// TODO: Parse "packages/" directory to generate this list.
-const monorepoPackages = [
-	'packages/accessible-focus',
-	'packages/babel-plugin-i18n-calypso',
-	'packages/babel-plugin-transform-wpcalypso-async',
-	'packages/browser-data-collector',
-	'packages/calypso-analytics',
-	'packages/calypso-build',
-	'packages/calypso-codemods',
-	'packages/calypso-color-schemes',
-	'packages/calypso-config',
-	'packages/calypso-doctor',
-	'packages/calypso-polyfills',
-	'packages/calypso-stripe',
-	'packages/components',
-	'packages/composite-checkout',
-	'packages/create-calypso-config',
-	'packages/data-stores',
-	'packages/dependency-finder',
-	'packages/domain-picker',
-	'packages/effective-module-tree',
-	'packages/eslint-plugin-wpcalypso',
-	'packages/explat-client-react-helpers',
-	'packages/explat-client',
-	'packages/format-currency',
-	'packages/i18n-calypso-cli',
-	'packages/i18n-calypso',
-	'packages/i18n-utils',
-	'packages/js-utils',
-	'packages/language-picker',
-	'packages/languages',
-	'packages/launch',
-	'packages/load-script',
-	'packages/material-design-icons',
-	'packages/onboarding',
-	'packages/page-pattern-modal',
-	'packages/photon',
-	'packages/plans-grid',
-	'packages/popup-monitor',
-	'packages/request-external-access',
-	'packages/retarget-open-prs',
-	'packages/search',
-	'packages/shopping-cart',
-	'packages/social-previews',
-	'packages/spec-junit-reporter',
-	'packages/spec-xunit-reporter',
-	'packages/state-utils',
-	'packages/tree-select',
-	'packages/typography',
-	'packages/viewport-react',
-	'packages/viewport',
-	'packages/webpack-config-flag-plugin',
-	'packages/webpack-extensive-lodash-replacement-plugin',
-	'packages/webpack-inline-constant-exports-plugin',
-	'packages/webpack-rtl-plugin',
-	'packages/whats-new',
-	'packages/wp-babel-makepot',
-	'packages/wpcom-checkout',
-	'packages/wpcom-proxy-request',
-	'packages/wpcom.js',
-].map( ( pkg ) => path.resolve( pkg ) );
+function getMonorepoPackages() {
+	const packages = fs.readdirSync( 'packages', { withFileTypes: true } );
+	return packages
+		.filter( ( entry ) => entry.isDirectory() )
+		.map( ( entry ) => path.resolve( 'packages', entry.name ) );
+}
+const monorepoPackages = getMonorepoPackages();
 
 const findPackageDependencies = async ( {
 	path: pkgPath,
