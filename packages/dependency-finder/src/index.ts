@@ -100,7 +100,7 @@ const findPackageDependencies = async ( {
 		monorepoPackages,
 	} );
 	const { stdout } = await exec(
-		`find ${ absolutePkgPath } -type f -not -path '*/node_modules/*'`
+		`find ${ absolutePkgPath } -type f -not \\( -path '*/node_modules/*' -o -path '*/.cache/*' -o -path '*/dist/*' \\)`
 	);
 	const allFiles = stdout.trim().split( '\n' );
 
