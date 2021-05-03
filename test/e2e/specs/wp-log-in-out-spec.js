@@ -59,7 +59,7 @@ describe( `[${ host }] Authentication: (${ screenSize })`, function () {
 		driver = await driverManager.startBrowser();
 	} );
 
-	describe( 'Logging In and Out: @jetpack', function () {
+	describe( 'Logging In and Out: @parallel @jetpack', function () {
 		before( async function () {
 			return await driverManager.ensureNotLoggedIn( driver );
 		} );

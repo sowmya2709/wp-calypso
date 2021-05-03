@@ -22,7 +22,7 @@ const startBrowserTimeoutMS = config.get( 'startBrowserTimeoutMS' );
 const screenSize = driverManager.currentScreenSize();
 const host = getJetpackHost();
 
-describe( `[${ host }] Jetpack Plugins - Activating a plugin: (${ screenSize }) @jetpack`, function () {
+describe( `[${ host }] Jetpack Plugins - Activating a plugin: (${ screenSize }) @parallel @jetpack`, function () {
 	this.timeout( mochaTimeOut );
 	let driver;
 
@@ -68,7 +68,7 @@ describe( `[${ host }] Jetpack Plugins - Activating a plugin: (${ screenSize }) 
 	} );
 } );
 
-describe( `[${ host }] Jetpack Plugins - Searching a plugin: (${ screenSize }) @jetpack`, function () {
+describe( `[${ host }] Jetpack Plugins - Searching a plugin: (${ screenSize }) @parallel @jetpack`, function () {
 	this.timeout( mochaTimeOut );
 	let driver;
 
