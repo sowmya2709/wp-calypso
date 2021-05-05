@@ -3,6 +3,7 @@
  */
 import config from 'config';
 import assert from 'assert';
+import { describe } from '@automattic/calypso-e2e';
 
 /**
  * Internal dependencies
@@ -25,6 +26,7 @@ describe( 'Reader: (' + screenSize + ') @parallel', function () {
 	this.timeout( mochaTimeOut );
 	let driver;
 
+	// eslint-disable-next-line mocha/no-top-level-hooks
 	before( 'Start browser', async function () {
 		this.timeout( startBrowserTimeoutMS );
 		driver = await driverManager.startBrowser();

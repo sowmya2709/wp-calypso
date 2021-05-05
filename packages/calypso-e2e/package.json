@@ -15,7 +15,9 @@
 	],
 	"license": "GPL-2.0-or-later",
 	"dependencies": {
+		"@types/mocha": "^8.2.2",
 		"config": "^1.28.0",
+		"mocha": "^8.1.3",
 		"playwright": "^1.9.1"
 	},
 	"devDependencies": {
