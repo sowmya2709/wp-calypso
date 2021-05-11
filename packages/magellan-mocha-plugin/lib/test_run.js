@@ -34,8 +34,8 @@ const MochaTestRun = function ( options ) {
 		basePath: path.join( options.tempAssetPath, '..', sanitizedName ),
 		counter: 0,
 	} );
+	this.pathWithCounter = pathWithCounter;
 
-	process.env.TEMP_ASSET_PATH = pathWithCounter;
 	fs.mkdirSync( pathWithCounter, { recursive: true } );
 	fs.writeFileSync(
 		path.join( pathWithCounter, `dummy${ ( Math.random() * 100000 ).toFixed( 0 ) }.log` ),
@@ -51,7 +51,13 @@ MochaTestRun.prototype.getCommand = function () {
 
 // return the environment
 MochaTestRun.prototype.getEnvironment = function ( env ) {
-	return _.extend( {}, env );
+	return _.extend(
+		{
+			TEMP_ASSET_PATH: this.pathWithCounter,
+		},
+		env,
+		{}
+	);
 };
 
 MochaTestRun.prototype.getArguments = function () {
