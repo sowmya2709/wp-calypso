@@ -37,6 +37,10 @@ const MochaTestRun = function ( options ) {
 
 	process.env.TEMP_ASSET_PATH = pathWithCounter;
 	fs.mkdirSync( pathWithCounter, { recursive: true } );
+	fs.writeFileSync(
+		path.join( pathWithCounter, `dummy${ ( Math.random() * 100000 ).toFixed( 0 ) }.log` ),
+		pathWithCounter
+	);
 	_.extend( this, options );
 };
 
