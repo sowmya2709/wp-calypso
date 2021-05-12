@@ -3,6 +3,8 @@
  */
 import assert from 'assert';
 import config from 'config';
+import { By } from 'selenium-webdriver';
+import * as driverHelper from '../lib/driver-helper';
 
 /**
  * Internal dependencies
@@ -41,10 +43,10 @@ describe( `[${ host }] Themes: All sites (${ screenSize })`, function () {
 			this.expectedTheme = 'Twenty F';
 
 			this.loginFlow = new LoginFlow( driver, 'multiSiteUser' );
-			await this.loginFlow.loginAndSelectAllSites();
+			await this.loginFlow.loginAndSelectMySite();
 
 			this.sidebarComponent = await SidebarComponent.Expect( driver );
-			await this.sidebarComponent.selectAllSitesThemes();
+			await this.sidebarComponent.selectThemes();
 		} );
 
 		it( 'can search for free themes', async function () {
@@ -68,22 +70,26 @@ describe( `[${ host }] Themes: All sites (${ screenSize })`, function () {
 			} );
 
 			describe( 'when Activate is clicked', function () {
-				it( 'can click activate', async function () {
+				it( 'can click activate and see the success modal', async function () {
 					await this.themesPage.clickPopoverItem( 'Activate' );
-					return ( this.siteSelector = await SiteSelectorComponent.Expect( driver ) );
+					const thanksModalShown = await driverHelper.isElementEventuallyLocatedAndVisible(
+						driver,
+						By.css( '.themes__thanks-modal' )
+					);
+					return assert(
+						thanksModalShown,
+						"The 'Thanks for Choosing Twenty Sixteen' modal was not displayed after activating"
+					);
 				} );
 
-				it( 'shows the site selector', async function () {
-					const siteSelectorShown = await this.siteSelector.displayed();
-					return assert( siteSelectorShown, 'The site selector was not shown' );
-				} );
-
-				it( 'can select the first site sites', async function () {
-					await this.siteSelector.selectFirstSite();
-					return await this.siteSelector.ok();
-				} );
+				// Some tests about activating a theme in the context of "All Sites" were
+				// removed - check git history. Visiting "/themes" while logged out should now
+				// force you to select a site before proceeding. You'll be redirected to
+				// "/themes/<site>" and be operating only in the context of one site.
 
 				// Skip reason: https://github.com/Automattic/wp-calypso/issues/50130
+				// Note this was disabled before the "All Sites" change mentioned
+				// directly above.
 				describe.skip( 'Successful activation dialog', function () {
 					it( 'should show the successful activation dialog', async function () {
 						const themeDialogComponent = await ThemeDialogComponent.Expect( driver );
