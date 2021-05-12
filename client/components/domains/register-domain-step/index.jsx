@@ -116,6 +116,9 @@ const MAX_PAGES = 3;
 const SUGGESTION_QUANTITY = isPaginationEnabled ? PAGE_SIZE * MAX_PAGES : PAGE_SIZE;
 const MIN_QUERY_LENGTH = 2;
 
+// session storage key for query cache
+const SESSION_STORAGE_QUERY_KEY = 'domain_step_query';
+
 function getQueryObject( props ) {
 	if ( ! props.selectedSite || ! props.selectedSite.domain ) {
 		return null;
@@ -330,12 +333,14 @@ class RegisterDomainStep extends React.Component {
 	}
 
 	componentDidMount() {
-		if (
-			this.state.lastQuery &&
-			! this.state.searchResults &&
-			! this.state.subdomainSearchResults
-		) {
-			this.onSearch( this.state.lastQuery );
+		const storedQuery = globalThis?.sessionStorage?.getItem( SESSION_STORAGE_QUERY_KEY );
+		const query = this.state.lastQuery || storedQuery;
+
+		if ( query && ! this.state.searchResults && ! this.state.subdomainSearchResults ) {
+			this.onSearch( query );
+
+			// Delete the stored query once it is consumed.
+			globalThis?.sessionStorage?.removeItem( SESSION_STORAGE_QUERY_KEY );
 		} else {
 			this.getAvailableTlds();
 			this.save();
@@ -1118,7 +1123,7 @@ class RegisterDomainStep extends React.Component {
 		} );
 	};
 
-	onSearch = ( searchQuery, { shouldQuerySubdomains = true } = {} ) => {
+	onSearch = async ( searchQuery, { shouldQuerySubdomains = true } = {} ) => {
 		debug( 'onSearch handler was triggered with query', searchQuery );
 
 		const domain = getDomainSuggestionSearch( searchQuery, MIN_QUERY_LENGTH );
@@ -1142,26 +1147,29 @@ class RegisterDomainStep extends React.Component {
 			this.props.recordSearchFormSubmit
 		);
 
-		this.setState( { lastDomainSearched: domain, railcarId: this.getNewRailcarId() }, () => {
-			const timestamp = Date.now();
+		this.setState(
+			{ lastDomainSearched: domain, railcarId: this.getNewRailcarId(), loadingResults: true },
+			() => {
+				const timestamp = Date.now();
 
-			this.getAvailableTlds( domain, this.props.vendor );
-			const domainSuggestions = Promise.all( [
-				this.checkDomainAvailability( domain, timestamp ),
-				this.getDomainsSuggestions( domain, timestamp ),
-			] );
+				this.getAvailableTlds( domain, this.props.vendor );
+				const domainSuggestions = Promise.all( [
+					this.checkDomainAvailability( domain, timestamp ),
+					this.getDomainsSuggestions( domain, timestamp ),
+				] );
 
-			domainSuggestions
-				.catch( () => [] ) // handle the error and return an empty list
-				.then( this.handleDomainSuggestions( domain ) );
+				domainSuggestions
+					.catch( () => [] ) // handle the error and return an empty list
+					.then( this.handleDomainSuggestions( domain ) );
 
-			if (
-				shouldQuerySubdomains &&
-				( this.props.includeWordPressDotCom || this.props.includeDotBlogSubdomain )
-			) {
-				this.getSubdomainSuggestions( domain, timestamp );
+				if (
+					shouldQuerySubdomains &&
+					( this.props.includeWordPressDotCom || this.props.includeDotBlogSubdomain )
+				) {
+					this.getSubdomainSuggestions( domain, timestamp );
+				}
 			}
-		} );
+		);
 	};
 
 	showNextPage = () => {
@@ -1287,6 +1295,8 @@ class RegisterDomainStep extends React.Component {
 		if ( premiumDomains?.[ domain ]?.is_price_limit_exceeded ) {
 			return;
 		}
+
+		globalThis?.sessionStorage.setItem( SESSION_STORAGE_QUERY_KEY, this.state.lastQuery || '' );
 
 		const isSubDomainSuggestion = get( suggestion, 'isSubDomainSuggestion' );
 		if ( ! hasDomainInCart( this.props.cart, domain ) && ! isSubDomainSuggestion ) {
