@@ -8,7 +8,7 @@
   - mini-css-extract-plugin to ^1.6.0
   - node-sass to ^6.0.0
   - postcss-loader to ^5.2.0
-  - sass-loader to ^10.1.0
+  - sass-loader to ^11.0.0
   - postcss to ^8.2.15
 
 ## 8.0.0
