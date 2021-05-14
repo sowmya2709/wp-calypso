@@ -835,6 +835,12 @@ function WPLineItem( {
 		product.item_subtotal_integer < originalAmountInteger && originalAmountDisplay
 	);
 
+	const deleteButtonText = String(
+		translate( 'Remove %s from cart', {
+			args: label,
+		} )
+	);
+
 	/* eslint-disable wpcalypso/jsx-classname-namespace */
 	return (
 		<div
@@ -869,6 +875,7 @@ function WPLineItem( {
 				<>
 					<DeleteButton
 						className="checkout-line-item__remove-product"
+						aria-label={ deleteButtonText }
 						buttonType="borderless"
 						disabled={ isDisabled }
 						onClick={ () => {
