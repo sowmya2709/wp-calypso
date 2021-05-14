@@ -47,8 +47,13 @@
 		"@testing-library/dom": "^7.28.1",
 		"@testing-library/react": "^11.2.6",
 		"@testing-library/user-event": "^12.8.3",
+		"@wordpress/data": "^4.27.3",
+		"@wordpress/is-shallow-equal": "*",
+		"@wp-g2/create-styles": "*",
 		"react": "^16.12.0",
-		"react-dom": "^16.12.0"
+		"react-dom": "^16.12.0",
+		"react-native": "*",
+		"reakit-utils": "*"
 	},
 	"scripts": {
 		"clean": "tsc --build ./tsconfig.json ./tsconfig-cjs.json --clean && npx rimraf dist",
