@@ -18,7 +18,7 @@ import getMediaLibrarySelectedItems from 'calypso/state/selectors/get-media-libr
 import TrackComponentView from 'calypso/lib/analytics/track-component-view';
 import Notice from 'calypso/components/notice';
 import NoticeAction from 'calypso/components/notice/notice-action';
-import MediaListData from 'calypso/components/data/media-list-data';
+import { withMedia } from 'calypso/components/data/media-list-data';
 import {
 	ValidationErrors as MediaValidationErrors,
 	MEDIA_IMAGE_RESIZER,
@@ -380,25 +380,21 @@ export class MediaLibraryContent extends React.Component {
 		].join( '-' );
 
 		return (
-			<MediaListData
-				siteId={ this.props.site.ID }
-				postId={ this.props.postId }
+			<MediaLibraryList
+				key={ listKey }
+				site={ this.props.site }
 				filter={ this.props.filter }
+				filterRequiresUpgrade={ this.props.filterRequiresUpgrade }
 				search={ this.props.search }
-				source={ this.props.source }
-			>
-				<MediaLibraryList
-					key={ listKey }
-					site={ this.props.site }
-					filter={ this.props.filter }
-					filterRequiresUpgrade={ this.props.filterRequiresUpgrade }
-					search={ this.props.search }
-					containerWidth={ this.props.containerWidth }
-					thumbnailType={ this.getThumbnailType() }
-					single={ this.props.single }
-					scrollable={ this.props.scrollable }
-				/>
-			</MediaListData>
+				containerWidth={ this.props.containerWidth }
+				thumbnailType={ this.getThumbnailType() }
+				single={ this.props.single }
+				scrollable={ this.props.scrollable }
+				media={ this.props.media }
+				mediaHasNextPage={ this.props.hasNextPage }
+				mediaOnFetchNextPage={ this.props.fetchNextPage }
+				isFetchingNextPage={ this.props.isFetchingNextPage }
+			/>
 		);
 	}
 
@@ -406,6 +402,10 @@ export class MediaLibraryContent extends React.Component {
 		if ( this.needsToBeConnected() ) {
 			return null;
 		}
+
+		const selectedItems = this.props.selectedItems.map( ( id ) =>
+			this.props.media.find( ( item ) => item.ID === id )
+		);
 
 		if ( this.props.source !== '' ) {
 			return (
@@ -416,7 +416,7 @@ export class MediaLibraryContent extends React.Component {
 					canCopy={ this.props.postId === undefined }
 					source={ this.props.source }
 					onSourceChange={ this.props.onSourceChange }
-					selectedItems={ this.props.selectedItems }
+					selectedItems={ selectedItems }
 					sticky={ ! this.props.scrollable }
 					hasAttribution={ 'pexels' === this.props.source }
 					hasRefreshButton={ 'pexels' !== this.props.source }
@@ -432,7 +432,7 @@ export class MediaLibraryContent extends React.Component {
 					onMediaScaleChange={ this.props.onMediaScaleChange }
 					onAddMedia={ this.props.onAddMedia }
 					onAddAndEditImage={ this.props.onAddAndEditImage }
-					selectedItems={ this.props.selectedItems }
+					selectedItems={ selectedItems }
 					onViewDetails={ this.props.onViewDetails }
 					onDeleteItem={ this.props.onDeleteItem }
 					sticky={ ! this.props.scrollable }
@@ -486,4 +486,4 @@ export default connect(
 	},
 	null,
 	{ pure: false }
-)( localize( MediaLibraryContent ) );
+)( localize( withMedia( MediaLibraryContent ) ) );
