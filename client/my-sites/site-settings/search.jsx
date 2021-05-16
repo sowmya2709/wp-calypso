@@ -195,23 +195,24 @@ class Search extends Component {
 					disabled={ isRequestingSettings || isSavingSettings }
 					onChange={ handleJetpackSearchToggle }
 				/>
-
-				<div className="site-settings__jetpack-instant-search-toggle">
-					<FormToggle
-						checked={
-							isSearchModuleActive &&
-							this.props.hasSearchProduct &&
-							!! fields.instant_search_enabled
-						}
-						disabled={ ! hasSearchProduct || isRequestingSettings || isSavingSettings }
-						onChange={ handleInstantSearchToggle }
-					>
-						{ translate( 'Enable instant search experience (recommended)' ) }
-					</FormToggle>
-					{ isLoading || activatingSearchModule || isSavingSettings
-						? this.renderSettingsUpdating()
-						: this.renderInstantSearchExplanation() }
-				</div>
+				{ this.props.hasSearchProduct && (
+					<div className="site-settings__jetpack-instant-search-toggle">
+						<FormToggle
+							checked={
+								isSearchModuleActive &&
+								this.props.hasSearchProduct &&
+								!! fields.instant_search_enabled
+							}
+							disabled={ ! hasSearchProduct || isRequestingSettings || isSavingSettings }
+							onChange={ handleInstantSearchToggle }
+						>
+							{ translate( 'Enable instant search experience (recommended)' ) }
+						</FormToggle>
+						{ isLoading || activatingSearchModule || isSavingSettings
+							? this.renderSettingsUpdating()
+							: this.renderInstantSearchExplanation() }
+					</div>
+				) }
 			</Fragment>
 		);
 	}
@@ -269,19 +270,21 @@ class Search extends Component {
 				>
 					{ translate( 'Enable Jetpack Search' ) }
 				</FormToggle>
-
-				<div className="site-settings__jetpack-instant-search-toggle">
-					<FormToggle
-						checked={ !! fields.jetpack_search_enabled && !! fields.instant_search_enabled }
-						disabled={ isRequestingSettings || isSavingSettings || ! hasSearchProduct }
-						onChange={ handleInstantSearchToggle }
-					>
-						{ translate( 'Enable instant search experience (recommended)' ) }
-					</FormToggle>
-					{ isLoading || activatingSearchModule || isSavingSettings
-						? this.renderSettingsUpdating()
-						: this.renderInstantSearchExplanation() }
-				</div>
+				{ /** Business plan could be simple sites too, unless user triggers certain actions  */ }
+				{ this.props.hasSearchProduct && (
+					<div className="site-settings__jetpack-instant-search-toggle">
+						<FormToggle
+							checked={ !! fields.jetpack_search_enabled && !! fields.instant_search_enabled }
+							disabled={ isRequestingSettings || isSavingSettings || ! hasSearchProduct }
+							onChange={ handleInstantSearchToggle }
+						>
+							{ translate( 'Enable instant search experience (recommended)' ) }
+						</FormToggle>
+						{ isLoading || activatingSearchModule || isSavingSettings
+							? this.renderSettingsUpdating()
+							: this.renderInstantSearchExplanation() }
+					</div>
+				) }
 			</Fragment>
 		);
 	}
