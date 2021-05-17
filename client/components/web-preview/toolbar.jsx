@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { partial } from 'lodash';
 import Gridicon from 'calypso/components/gridicon';
 import { connect } from 'react-redux';
+import { logmeinUrl } from '@automattic/logmein';
 
 /**
  * Internal dependencies
@@ -181,7 +182,7 @@ class PreviewToolbar extends Component {
 						<Button
 							primary
 							className="web-preview__external"
-							href={ externalUrl || previewUrl }
+							href={ logmeinUrl( externalUrl ) || previewUrl }
 							target={ isModalWindow ? '_blank' : null }
 							rel="noopener noreferrer"
 							onClick={ this.handleEditorWebPreviewExternalClick }
