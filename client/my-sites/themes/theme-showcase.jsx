@@ -253,11 +253,8 @@ class ThemeShowcase extends React.Component {
 			title,
 			filterString,
 			isMultisite,
-<<<<<<< HEAD
 			canUploadThemesOrPlugins,
-=======
 			locale,
->>>>>>> 6f425543df (SSR theme view WIP)
 		} = this.props;
 		const tier = config.isEnabled( 'upgrades/premium-themes' ) ? this.props.tier : 'free';
 
