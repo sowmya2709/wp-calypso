@@ -16,7 +16,6 @@ import ThemeDetailPage from '../../lib/pages/theme-detail-page.js';
 import ThemesPage from '../../lib/pages/themes-page.js';
 
 import SidebarComponent from '../../lib/components/sidebar-component';
-import SiteSelectorComponent from '../../lib/components/site-selector-component';
 import ThemeDialogComponent from '../../lib/components/theme-dialog-component';
 import CurrentThemeComponent from '../../lib/components/current-theme-component';
 
