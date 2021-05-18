@@ -11,10 +11,8 @@ import * as driverManager from '../../lib/driver-manager.js';
 import * as dataHelper from '../../lib/data-helper';
 
 import ThemesPage from '../../lib/pages/themes-page.js';
-import CustomizerPage from '../../lib/pages/customizer-page.js';
 
 import SidebarComponent from '../../lib/components/sidebar-component';
-import SiteSelectorComponent from '../../lib/components/site-selector-component';
 
 import LoginFlow from '../../lib/flows/login-flow.js';
 
@@ -81,35 +79,8 @@ describe( `[${ host }] Themes: All sites (${ screenSize })`, function () {
 				assert( displayed, 'Popover menu not displayed' );
 			} );
 
-			describe.skip( 'when "Try & Customize" is clicked', function () {
-				it( 'click try and customize popover', async function () {
-					await this.themesPage.clickPopoverItem( 'Try & Customize' );
-					this.siteSelector = await SiteSelectorComponent.Expect( driver );
-				} );
-
-				it( 'should show the site selector', async function () {
-					const siteSelectorShown = await this.siteSelector.displayed();
-					return assert( siteSelectorShown, 'The site selector was not shown' );
-				} );
-
-				describe( 'when a site is selected, and Customize is clicked', function () {
-					it( 'select first site', async function () {
-						await this.siteSelector.selectFirstSite();
-						await this.siteSelector.ok();
-					} );
-
-					it( 'should open the customizer with the selected site and theme', async function () {
-						this.customizerPage = await CustomizerPage.Expect( driver );
-						const url = await driver.getCurrentUrl();
-						assert( url.indexOf( this.siteSelector.selectedSiteDomain ) > -1, 'Wrong site domain' );
-						assert( url.indexOf( this.themeSearchName ) > -1, 'Wrong theme' );
-					} );
-
-					after( async function () {
-						await this.customizerPage.close();
-					} );
-				} );
-			} );
+			// Try & Customize had a skipped test that relied on the
+			// now removed SiteSelectorModal - make a new Try & Customize test?
 		} );
 	} );
 } );
