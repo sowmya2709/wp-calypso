@@ -21,7 +21,6 @@ import * as driverManager from '../../lib/driver-manager.js';
 import EmailClient from '../../lib/email-client.js';
 
 const mochaTimeOut = config.get( 'mochaTimeoutMS' );
-const startBrowserTimeoutMS = config.get( 'startBrowserTimeoutMS' );
 const inviteInboxId = config.get( 'inviteInboxId' );
 const screenSize = driverManager.currentScreenSize();
 const host = dataHelper.getJetpackHost();
@@ -29,12 +28,7 @@ const emailClient = new EmailClient( inviteInboxId );
 
 describe( `[${ host }] Invites:  (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	let driver;
-
-	before( 'Start browser', async function () {
-		this.timeout( startBrowserTimeoutMS );
-		driver = await driverManager.startBrowser();
-	} );
+	const driver = global.__BROWSER__;
 
 	describe( 'Inviting new user as an Editor and revoke invite: @parallel @jetpack', function () {
 		const newUserName = 'e2eflowtestingeditorb' + new Date().getTime().toString();

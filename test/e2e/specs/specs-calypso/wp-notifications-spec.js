@@ -20,18 +20,12 @@ import NavBarComponent from '../../lib/components/nav-bar-component.js';
 import NotificationsComponent from '../../lib/components/notifications-component.js';
 
 const mochaTimeOut = config.get( 'mochaTimeoutMS' );
-const startBrowserTimeoutMS = config.get( 'startBrowserTimeoutMS' );
 const screenSize = driverManager.currentScreenSize();
 const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Notifications: (${ screenSize }) @parallel`, function () {
 	this.timeout( mochaTimeOut );
-	let driver;
-
-	before( 'Start browser', async function () {
-		this.timeout( startBrowserTimeoutMS );
-		driver = await driverManager.startBrowser();
-	} );
+	const driver = global.__BROWSER__;
 
 	const commentingUser = dataHelper.getAccountConfig( 'commentingUser' )[ 0 ];
 	const comment = dataHelper.randomPhrase() + ' TBD';
