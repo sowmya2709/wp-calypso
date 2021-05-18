@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Gridicon from 'calypso/components/gridicon';
+import { logmeinUrl } from '@automattic/logmein';
 
 /**
  * Internal dependencies
@@ -58,7 +59,7 @@ class DomainStatus extends React.Component {
 		return (
 			<Card compact={ true } className={ cardClasses }>
 				<h2 className={ headerClasses }>
-					<a target="_blank" rel="noopener noreferrer" href={ 'http://' + header }>
+					<a target="_blank" rel="noopener noreferrer" href={ logmeinUrl( 'http://' + header ) }>
 						<span>{ header }</span>
 						<Gridicon icon="external" size={ 18 } />
 					</a>

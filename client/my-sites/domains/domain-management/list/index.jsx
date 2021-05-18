@@ -9,6 +9,7 @@ import page from 'page';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
+import { logmeinUrl } from '@automattic/logmein';
 
 /**
  * Internal dependencies
@@ -398,7 +399,7 @@ export class List extends React.Component {
 				<div className="list__header-primary-domain-content">
 					<ExternalLink
 						className="list__header-primary-domain-url"
-						href={ selectedSite.URL }
+						href={ logmeinUrl( selectedSite.URL ) }
 						title={ translate( 'Launch your site' ) }
 						target="_blank"
 						icon={ true }
