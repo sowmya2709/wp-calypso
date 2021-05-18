@@ -26,8 +26,11 @@ const host = dataHelper.getJetpackHost();
 // NOTE: test in jetpack env is failing due to some strange issue, when switching to new tab. It fails only in CI
 describe( `[${ host }] Activating Themes: (${ screenSize }) @parallel`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
 
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 	describe( 'Activating Themes:', function () {
 		it( 'Login', async function () {
 			const loginFlow = new LoginFlow( driver );

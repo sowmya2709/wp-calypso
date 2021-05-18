@@ -20,7 +20,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Editor: Media Upload (${ screenSize }) @parallel @jetpack`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Image Upload:', function () {
 		let gutenbergEditor;

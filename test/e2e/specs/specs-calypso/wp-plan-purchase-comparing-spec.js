@@ -20,7 +20,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Plans: (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Comparing Plans:  @parallel @jetpack', function () {
 		it( 'Login and Select My Site', async function () {

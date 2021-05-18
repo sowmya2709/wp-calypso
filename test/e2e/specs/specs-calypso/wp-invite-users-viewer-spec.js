@@ -32,7 +32,11 @@ const emailClient = new EmailClient( inviteInboxId );
 
 describe( `[${ host }] Invites:  (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Inviting New User as a Viewer of a WordPress.com Private Site: @parallel', function () {
 		const newUserName = 'e2eflowtestingviewer' + new Date().getTime().toString();

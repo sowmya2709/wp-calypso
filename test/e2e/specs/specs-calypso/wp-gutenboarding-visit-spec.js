@@ -16,7 +16,11 @@ const screenSize = driverManager.currentScreenSize();
 
 describe( 'Gutenboarding: (' + screenSize + ')', function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Visit Gutenboarding page as a logged in user @parallel', function () {
 		it( 'Can log in as user', async function () {

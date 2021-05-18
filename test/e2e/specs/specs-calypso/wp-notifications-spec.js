@@ -25,7 +25,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Notifications: (${ screenSize }) @parallel`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	const commentingUser = dataHelper.getAccountConfig( 'commentingUser' )[ 0 ];
 	const comment = dataHelper.randomPhrase() + ' TBD';

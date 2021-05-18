@@ -33,7 +33,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Auth Screen Canary: (${ screenSize }) @parallel @safaricanary`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Loading the log-in screen', function () {
 		it( 'Can see the log in screen', async function () {
@@ -44,7 +48,11 @@ describe( `[${ host }] Auth Screen Canary: (${ screenSize }) @parallel @safarica
 
 describe( `[${ host }] Authentication: (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Logging In and Out: @jetpack', function () {
 		before( async function () {

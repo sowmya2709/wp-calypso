@@ -35,7 +35,11 @@ const emailClient = new EmailClient( inviteInboxId );
 
 describe( `[${ host }] Invites:  (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Inviting new user as an Editor: @parallel @jetpack', function () {
 		const newUserName = 'e2eflowtestingeditora' + new Date().getTime().toString();

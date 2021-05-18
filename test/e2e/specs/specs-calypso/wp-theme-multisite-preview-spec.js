@@ -23,7 +23,11 @@ const screenSize = driverManager.currentScreenSize();
 const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Themes: All sites (${ screenSize })`, function () {
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Preview a theme @parallel', function () {
 		this.timeout( mochaTimeOut );

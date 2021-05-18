@@ -19,7 +19,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Media: Edit Media (${ screenSize }) @parallel @jetpack`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Edit Existing Media:', function () {
 		before( 'Can login and select my site', async function () {

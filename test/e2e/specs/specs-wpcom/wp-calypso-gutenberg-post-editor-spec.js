@@ -41,7 +41,11 @@ const gutenbergUser =
 
 describe( `[${ host }] Calypso Gutenberg Editor: Posts (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Public Posts: Preview and Publish a Public Post @parallel', function () {
 		let fileDetails;

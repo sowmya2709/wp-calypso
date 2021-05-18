@@ -21,7 +21,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Plans: (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Upgrade a plan:  @parallel @jetpack', function () {
 		before( async function () {

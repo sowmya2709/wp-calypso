@@ -21,7 +21,11 @@ const host = dataHelper.getJetpackHost();
 
 describe( `[${ host }] Previewing Themes: (${ screenSize })`, function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Previewing Themes @parallel @jetpack', function () {
 		it( 'Can login and select themes', async function () {

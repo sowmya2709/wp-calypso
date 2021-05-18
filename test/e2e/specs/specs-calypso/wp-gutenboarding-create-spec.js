@@ -28,7 +28,11 @@ const screenSize = driverManager.currentScreenSize();
 
 describe( 'Gutenboarding: (' + screenSize + ')', function () {
 	this.timeout( mochaTimeOut );
-	const driver = global.__BROWSER__;
+	let driver;
+
+	before( () => {
+		driver = global.__BROWSER__;
+	} );
 
 	describe( 'Create new site as existing user @parallel @canary', function () {
 		const siteTitle = dataHelper.randomPhrase();
